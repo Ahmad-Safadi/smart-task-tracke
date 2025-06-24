@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+
+  <h1>Home Page</h1>
+
+  <!-- جدول المهام -->
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Task</th>
+      <th>State</th>
+      <th>Difficulty</th>
+      <th>Action</th>
+    </tr>
+    {% for i in tasks %}
+    <tr>
+      <td>{{ i.id }}</td>
+      <td>{{ i.TaskName }}</td>
+      <td class="{{ 'done' if i.State == 'done' else 'pending' }}">{{ i.State }}</td>
+      <td>{{ i.difficulty }}</td>
+      <td>
+        <form method="POST" action="/toggle/{{ i.id }}">
+          <button>Toggle</button>
+        </form>
+        <form method="POST" action="/delete/{{ i.id }}">
+          <button>Delete</button>
+        </form>
+        <form method="POST" action="/difficulty/{{ i.id }}">
+          <button>Change Difficulty</button>
+        </form>
+        <form method="POST" action="/edit/{{ i.id }}">
+          <button name="Edit" value="Edit">Edit Task</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <!-- نموذج إضافة مهمة -->
+  <form method="POST" class="add-task-form">
+    <div class="Typs">
+      <input name="Task" type="text" placeholder="Task Name" required>
+      <select name="difficulty">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+      </select>
+      <button name="Send" value="Send">➕ Add Task</button>
+    </div>
+  </form>
+
+  <!-- الإحصائيات -->
+  <div class="Statat-row">
+    <div class="stat-box">
+      <h3>Deleted Tasks</h3>
+      <h1>{{ session['deleted_tasks'] }}</h1>
+    </div>
+
+    <div class="stat-box">
+      <h3>Task Total</h3>
+      <h1>
+        {% if session.get('id') is not none %}
+          {{ session['id'] }}
+        {% else %}
+          0
+        {% endif %}
+      </h1>
+    </div>
+
+    <div class="stat-box">
+      <h3>Task Complete</h3>
+      <h1>{{ session['done'] }}</h1>
+    </div>
+
+    <div class="stat-box">
+      <h3>Task UnComplete</h3>
+      <h1>{{ session['pending'] }}</h1>
+    </div>
+
+    <div class="stat-box">
+      <h3>Difficulty Complete</h3>
+      <h1>{{ session['difficulty_complete'] }}</h1>
+    </div>
+
+    <div class="stat-box">
+      <h3>Difficulty Pending</h3>
+      <h1>{{ session['difficulty_pending'] }}</h1>
+    </div>
+  </div>
+
+  <!-- زر حذف الكل -->
+  <form method="POST" action="/Delete_All" class="delete-all-form">
+    <button name="DA" value="DA">Delete All</button>
+  </form>
+
+</body>
+</html>
